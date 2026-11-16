@@ -79,6 +79,10 @@ privé gratuit de type **Tailscale** (<https://tailscale.com>) :
    fenêtre noire (et dans Réglages ⚙).
 3. L'équipe utilise cette adresse à la place de l'autre.
 
+Autre solution, sans rien installer chez personne : mettre Writer-Share sur un
+serveur (VPS). Il tourne alors en permanence à une adresse `https://…`, et
+chacun a son compte et son mot de passe. Voir `deploy/DEPLOIEMENT-VPS.md`.
+
 N'ouvre jamais de port sur ta box Internet pour Writer-Share : le code d'accès
 protège une équipe de confiance, pas un service exposé au monde entier.
 Ne le place pas non plus derrière un « tunnel » public ou un proxy (ngrok,
