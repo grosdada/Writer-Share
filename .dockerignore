@@ -1,0 +1,10 @@
+.git
+.claude
+writer_share_data
+exemples
+deploy
+*.ico
+*.icns
+*.bat
+*.command
+.env

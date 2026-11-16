@@ -1,0 +1,45 @@
+# Writer-Share derrière Traefik (certificat Let's Encrypt automatique).
+# Réglages dans un fichier .env à côté de celui-ci :
+#   WRITER_SHARE_HOST=writer.exemple.fr
+#   ANTHROPIC_API_KEY=sk-ant-...        (facultatif : peut aussi se saisir dans l'appli)
+services:
+  writer-share:
+    build: .
+    image: writer-share:local
+    container_name: writer-share
+    restart: unless-stopped
+    environment:
+      - WRITER_SHARE_URL=https://${WRITER_SHARE_HOST:?Renseigne WRITER_SHARE_HOST dans .env}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      # Scénarios, comptes et réglages : tout ce qu'il faut sauvegarder est ici.
+      - writer-share-data:/data
+    networks:
+      - writer-share-network
+    # Le conteneur n'écrit que dans /data et n'a aucun privilège.
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8777/api/mode', timeout=4)"]
+      interval: 30s
+      timeout: 6s
+      retries: 3
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=writer-share_writer-share-network
+      - traefik.http.routers.writer-share.rule=Host(`${WRITER_SHARE_HOST}`)
+      - traefik.http.routers.writer-share.entrypoints=websecure
+      - traefik.http.routers.writer-share.tls.certresolver=letsencrypt
+      - traefik.http.services.writer-share.loadbalancer.server.port=8777
+
+networks:
+  writer-share-network:
+    driver: bridge
+
+volumes:
+  writer-share-data:

@@ -6,6 +6,40 @@ pare-feu ni de Tailscale. Chacun a son compte et son mot de passe.
 Ce guide vise Ubuntu ou Debian. Remplace partout `scenario.exemple.fr` par ton
 sous-domaine. Les commandes se lancent en SSH sur le VPS.
 
+## Deux façons d'installer
+
+- **Docker + Traefik** (ci-dessous) : si le VPS fait déjà tourner des
+  conteneurs derrière Traefik. C'est le cas de `vps.placenta.cloud`.
+- **Service systemd + Caddy ou nginx** (reste de ce guide) : sur un VPS nu.
+  À ne pas utiliser si un proxy occupe déjà les ports 80 et 443.
+
+## Installation avec Docker et Traefik
+
+Le fichier `docker-compose.yml` à la racine du dépôt suppose un Traefik qui lit
+les étiquettes Docker, avec un point d'entrée `websecure` et un résolveur de
+certificats nommé `letsencrypt`.
+
+```bash
+git clone https://github.com/grosdada/Writer-Share.git ~/apps/writer-share
+cd ~/apps/writer-share
+echo 'WRITER_SHARE_HOST=writer.exemple.fr' > .env
+chmod 600 .env
+docker compose up -d --build
+docker compose logs writer-share | grep invite=     # lien du compte administrateur
+```
+
+| Besoin | Commande (dans `~/apps/writer-share`) |
+| --- | --- |
+| Mettre à jour | `git pull && docker compose up -d --build` |
+| Lire le journal | `docker compose logs --tail 50 writer-share` |
+| Redémarrer | `docker compose restart` |
+| Lien admin de secours | `docker compose run --rm writer-share python writer_share.py --admin-invite --data /data --url https://writer.exemple.fr` puis `docker compose restart` |
+| Sauvegarder | `docker run --rm -v writer-share_writer-share-data:/data -v "$PWD":/out alpine tar -czf /out/writer-share-$(date +%F).tar.gz -C / data` |
+
+Les données vivent dans le volume Docker `writer-share_writer-share-data`. La
+clé API se saisit dans l'appli (⚙ Réglages) ou dans `.env`
+(`ANTHROPIC_API_KEY=…`, puis `docker compose up -d`).
+
 ## Avant de commencer
 
 1. Chez ton registrar, crée un enregistrement DNS de type **A** :

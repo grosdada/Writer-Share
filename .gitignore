@@ -7,3 +7,6 @@ __pycache__/
 
 # Réglages locaux de l'éditeur
 .claude/
+
+# Réglages du déploiement Docker (domaine, clé API)
+.env
