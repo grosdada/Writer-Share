@@ -1,0 +1,9 @@
+# Données de l'équipe : scénarios, code d'accès, clé API. Ne jamais publier.
+writer_share_data/
+
+# Python
+__pycache__/
+*.pyc
+
+# Réglages locaux de l'éditeur
+.claude/
