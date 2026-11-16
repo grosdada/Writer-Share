@@ -1,0 +1,25 @@
+[Unit]
+Description=Writer-Share (atelier de scenario partage)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=writershare
+Group=writershare
+WorkingDirectory=/opt/writer-share
+# Cle API et adresse publique : voir /etc/writer-share.env
+EnvironmentFile=-/etc/writer-share.env
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/writer-share/venv/bin/python writer_share.py --public --no-browser --port 8777 --data /var/lib/writer-share
+Restart=always
+RestartSec=3
+
+# Le service n'a acces en ecriture qu'a son dossier de donnees.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/writer-share
+
+[Install]
+WantedBy=multi-user.target

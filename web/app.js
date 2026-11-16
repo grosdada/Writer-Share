@@ -242,7 +242,7 @@ async function pickerScreen() {
   app.replaceChildren(h('div', { class: 'center' }, h('div', { class: 'card wide' },
     h('div', { class: 'row' }, h('div', { class: 'brand grow' }, h('img', { src: 'icon.svg', alt: '' }), h('h1', {}, 'Bonjour ' + S.name)),
       h('button', { class: 'ghost', onclick: openHelp }, '? Aide'), h('button', { class: 'ghost', onclick: openSettings }, 'Réglages'),
-      h('button', { class: 'ghost', onclick: logout }, 'Changer de nom')),
+      h('button', { class: 'ghost', onclick: logout }, S.mode.public ? 'Se déconnecter' : 'Changer de nom')),
     list.length ? h('p', { class: 'muted' }, 'Choisis un scénario :') : h('p', { class: 'muted' }, 'Aucun scénario pour l\'instant. Crée le premier, tu pourras ensuite y importer un PDF.'),
     h('div', { class: 'plist' }, list.map((p) => h('div', { class: 'pitem', onclick: () => openProject(p.id) },
       h('div', { class: 'grow' }, h('b', {}, p.name), h('div', { class: 'muted small' },

@@ -1,0 +1,14 @@
+# Remplace scenario.exemple.fr par ton sous-domaine.
+# Caddy obtient et renouvelle le certificat HTTPS tout seul.
+scenario.exemple.fr {
+	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		Referrer-Policy "no-referrer"
+		X-Frame-Options "DENY"
+	}
+	reverse_proxy 127.0.0.1:8777 {
+		# Indispensable pour le temps reel : ne pas mettre les evenements en tampon.
+		flush_interval -1
+	}
+}
